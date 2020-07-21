@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Post: Identifiable {
+class Post: Identifiable {
+    
     var id = UUID()
     let author: Author
     let imageName: String
@@ -15,6 +16,16 @@ struct Post: Identifiable {
     let creationDate: Date
     var likes: Int = 0
     var isBookmarked = false
+    
+    internal init(id: UUID = UUID(), author: Author, imageName: String, comment: String, creationDate: Date, likes: Int = 0, isBookmarked: Bool = false) {
+        self.id = id
+        self.author = author
+        self.imageName = imageName
+        self.comment = comment
+        self.creationDate = creationDate
+        self.likes = likes
+        self.isBookmarked = isBookmarked
+    }
     
     static var all = [
         Post(author: Author.all[0], imageName: "p1", comment: "Une maison magnifique", creationDate: Date()),

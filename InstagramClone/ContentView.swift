@@ -22,37 +22,43 @@ struct ContentView: View {
                     
             }.tabItem {
                 Image(systemName: "house.fill")
-                    .font(.title2)
+                    .font(.title)
             }
             
             Text("Search")
                 .tabItem {
                     Image(systemName: "magnifyingglass")
-                        .font(.title2)
+                        .font(.title)
                 }
             
             Text("Add")
                 .tabItem {
                     Image(systemName: "plus.app")
-                        .font(.title2)
+                        .font(.title)
                 }
             
             Text("Heart")
                 .tabItem {
                     Image(systemName: "heart.fill")
-                        .font(.title2)
+                        .font(.title)
                 }
             
             Text("Profil")
                 .tabItem {
                     Image(systemName: "person.fill")
-                        .font(.title2)
+                        .font(.title)
                 }
         }
     }
 }
 
 struct HomeView: View {
+    
+    @State private var posts = Post.all
+    
+    //@AppStorage("lastPost", store: UserDefaults(suiteName: "fghjgh"))
+    var lastPost: Data = Data()
+    
     var relativeFormatter: RelativeDateTimeFormatter {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -62,9 +68,9 @@ struct HomeView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 20) {
+                    HStack(spacing: 20) {
                         ForEach(Author.all) { author in
                             AuthorStoryView(author: author)
                         }
@@ -72,7 +78,7 @@ struct HomeView: View {
                 }
                 Divider()
                 
-                ForEach(Post.all) { post in
+                ForEach(posts) { post in
                     VStack(alignment: .leading, spacing: 0) {
                         HStack {
                             AuthorStoryView(author: post.author, width: 40, showText: false)
@@ -130,19 +136,28 @@ struct HomeView: View {
                                 .lineLimit(nil)
                         }
                         
-                        Text(relativeFormatter.localizedString(for: post.creationDate, relativeTo: Date()))
+                        Text(self.relativeFormatter.localizedString(for: post.creationDate, relativeTo: Date()))
                             .font(.callout)
                             .foregroundColor(.gray)
                     }.padding(.horizontal)
                 }
             }
+        }.onAppear {
+            self.posts.shuffle()
+            self.save(self.posts[0])
         }
+    }
+    
+    func save(_ lastPost: Post) {
+        print(lastPost.comment)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Group {
+            ContentView()
+        }
     }
 }
 
